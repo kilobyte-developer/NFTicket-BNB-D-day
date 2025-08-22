@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation"; // ✅ for Next.js App Router
 
 declare global {
   interface Window {
-    ethereum?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ethereum?: any; // Adjust the type as needed
   }
 }
 
@@ -19,9 +20,9 @@ export default function Page() {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        setAccount(accounts[0]);
+        setAccount(accounts[0]); 
       } catch (error) {
-        console.error("User rejected wallet connection");
+        console.error("User rejected wallet connection",error);
       }
     } else {
       alert("Please install MetaMask!");

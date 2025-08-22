@@ -3,29 +3,21 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
-  Search, 
   MapPin, 
   Calendar, 
-  Clock, 
   Users, 
   Star, 
   Verified, 
   Zap, 
   Share2, 
   Heart, 
-  Download, 
-  Eye, 
-  TrendingUp, 
-  Shield, 
   Award, 
-  Gift, 
   ExternalLink, 
-  Play, 
-  Volume2, 
-  Wallet, 
+  Play,  
   Copy, 
   CheckCircle 
 } from 'lucide-react';
+import Image from 'next/image';
 
 // Types and Interfaces
 interface EventCollection {
@@ -311,9 +303,10 @@ const EventDetailsPage: React.FC = () => {
           {/* Event Image Gallery */}
           <div className="space-y-4">
             <div className="relative h-96 rounded-2xl overflow-hidden group">
-              <img 
-
+              <Image
                 src={eventData.gallery[0]}
+                height={500}
+                width={800}
                 alt={eventData.title}
                 className="object-cover"
               />
@@ -344,7 +337,7 @@ const EventDetailsPage: React.FC = () => {
             <div className="grid grid-cols-4 gap-2">
               {eventData.gallery.map((img, index) => (
                 <div key={index} className="h-20 rounded-lg cursor-pointer hover:opacity-75 transition-opacity overflow-hidden">
-                  <img 
+                  <Image
                     src={img} 
                     loading="lazy"
                     width={500}

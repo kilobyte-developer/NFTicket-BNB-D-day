@@ -1,7 +1,7 @@
 
 "use client"
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Shield, Play, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowRight,Sparkles, CheckCircle2 } from 'lucide-react';
 import { FlipWords } from '@/components/FlipWords';
 import { Spotlight } from '@/components/Spotlight';
 import Link from "next/link";   

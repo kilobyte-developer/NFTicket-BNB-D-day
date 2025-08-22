@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Calendar, Filter, Verified, Star, Users, Clock, Zap } from 'lucide-react';
+import { Search, MapPin, Calendar, Filter, Verified, Star, Users, Zap } from 'lucide-react';
 import Card from '@/components/Card';
+import Image from 'next/image';
 
 export default function EventExplorer() {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -254,7 +255,9 @@ export default function EventExplorer() {
 
                 {/* Event Image */}
                 <div className="relative h-48 overflow-hidden">
-                  <img 
+                  <Image
+                    height={192}
+                    width={384}
                     src={event.image} 
                     alt={event.title}
                     className="w-full h-full object-cover"

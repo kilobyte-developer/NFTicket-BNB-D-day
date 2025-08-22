@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image';
 import React from 'react';
 import { useEffect, useState, useRef } from 'react';
 
@@ -106,6 +107,21 @@ export default function Selection() {
   ];
 
   useEffect(() => {
+    function addAnimation() {
+      if (containerRef.current && scrollerRef.current) {
+        const scrollerContent = Array.from(scrollerRef.current.children);
+        scrollerContent.forEach((item) => {
+          const duplicatedItem = item.cloneNode(true);
+          if (scrollerRef.current) {
+            scrollerRef.current.appendChild(duplicatedItem);
+          }
+        });
+        getDirection();
+        getSpeed();
+        setStart(true);
+      }
+    }
+
     // Intersection Observer to detect when section is in viewport
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -125,22 +141,7 @@ export default function Selection() {
     return () => {
       observer.disconnect();
     };
-  }, []);
-
-  function addAnimation() {
-    if (containerRef.current && scrollerRef.current) {
-      const scrollerContent = Array.from(scrollerRef.current.children);
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        if (scrollerRef.current) {
-          scrollerRef.current.appendChild(duplicatedItem);
-        }
-      });
-      getDirection();
-      getSpeed();
-      setStart(true);
-    }
-  }
+  }, []); // Empty dependency array since addAnimation is now inside useEffect
 
   const getDirection = () => {
     if (containerRef.current) {
@@ -153,8 +154,6 @@ export default function Selection() {
       containerRef.current.style.setProperty("--animation-duration", "40s");
     }
   };
-
-
 
   return (
     <div ref={sectionRef} className="min-h-screen py-24 px-6 relative overflow-hidden bg-[#080510]">
@@ -241,10 +240,12 @@ export default function Selection() {
                 <div className="relative bg-gradient-to-br from-[#0a0718] via-purple-900/10 to-[#0a0718] rounded-2xl p-4 border border-purple-500/20 overflow-hidden backdrop-blur-sm">
                   {/* Event Image with hover effect */}
                   <div className="aspect-square bg-gray-700 rounded-lg mb-4 overflow-hidden relative">
-                    <img 
-                      src={event.image} 
-                      alt={event.name} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-3" 
+                    <Image
+                      src={event.image}
+                      width={500}
+                      height={500}
+                      alt={event.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-3"
                     />
                     {/* Description overlay */}
                     <div className="absolute inset-0 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4">

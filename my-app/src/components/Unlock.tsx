@@ -215,7 +215,7 @@ export default function Unlock() {
                   </h2>
                   <p className="text-lg leading-relaxed text-gray-300">
                     Turn creativity into currency with confidence in 
-                    Sphere's secure marketplace.
+                    Sphere&apos;s secure marketplace.
                   </p>
                 </div>
 
@@ -275,7 +275,7 @@ export default function Unlock() {
                     Embrace blockchain benefits for NFTs
                   </h3>
                   <p className="leading-relaxed text-gray-300">
-                    Unlock digital ownership's future with 
+                    Unlock digital ownership&apos;s future with 
                     transparency, security, and decentralized beauty.
                   </p>
                 </div>

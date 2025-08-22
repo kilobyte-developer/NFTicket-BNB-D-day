@@ -35,13 +35,6 @@ export default function SolanaStats() {
     };
   }, []);
 
-  interface AnimateCountUltraSmoothOptions {
-    target: number;
-    duration: number;
-    setValue: (value: number) => void;
-    decimals?: number;
-  }
-
   const animateCountUltraSmooth = (
     target: number,
     duration: number,
