@@ -1,5 +1,4 @@
 import type { NextRequest } from "next/server"
-// import { getContractWithSigner } from "@/lib/contract"
 import { getContractWithSigner } from "../../../../../lib/contract"
 import { supabase } from "../../../../../lib/supabase"
 import { validateMagicToken, createAuthResponse } from "../../../../../lib/auth"

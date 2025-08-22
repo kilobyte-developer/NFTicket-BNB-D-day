@@ -1,7 +1,5 @@
 import type { NextRequest } from "next/server"
-// import { getTicketData } from "@/lib/contract"
 import { getTicketData } from "../../../../../lib/contract"
-// import { supabase } from "@/lib/supabase"
 import { supabase } from "../../../../../lib/supabase"
 
 export async function GET(request: NextRequest, { params }: { params: { tokenId: string } }) {
