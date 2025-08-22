@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef, ReactElement } from "react";
-import { Shield, Ban, Eye, Star, Lock, DollarSign } from "lucide-react";
+import { Shield, Ban, Eye, Star, Lock, DollarSign, LucideIcon } from "lucide-react";
 
 interface Benefit {
-  icon: React.ElementType;
+  icon: LucideIcon;
   title: string;
   description: string;
   direction: "left" | "right" | "top" | "bottom";
@@ -12,7 +12,7 @@ interface Benefit {
 
 interface CardProps {
   title: string;
-  icon: ReactElement;
+  icon: React.ReactElement<any>;
   description: string;
   direction: "left" | "right" | "top" | "bottom";
   isVisible: boolean;
@@ -20,8 +20,8 @@ interface CardProps {
 }
 
 const Benefits: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [hasAnimated, setHasAnimated] = useState<boolean>(false);
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   const benefits: Benefit[] = [
@@ -129,7 +129,7 @@ const Benefits: React.FC = () => {
             <Card
               key={benefit.title}
               title={benefit.title}
-              icon={<benefit.icon className="h-8 w-8 text-white" />}
+              icon={React.createElement(benefit.icon, { className: "h-8 w-8 text-white" })}
               description={benefit.description}
               direction={benefit.direction}
               isVisible={isVisible}
@@ -166,7 +166,7 @@ const Card: React.FC<CardProps> = ({
   isVisible,
   index,
 }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isFlipped, setIsFlipped] = useState<boolean>(false);
 
   const getInitialTransform = (): string => {
     switch (direction) {
@@ -183,6 +183,14 @@ const Card: React.FC<CardProps> = ({
     }
   };
 
+  const handleMouseEnter = (): void => {
+    setIsFlipped(true);
+  };
+
+  const handleMouseLeave = (): void => {
+    setIsFlipped(false);
+  };
+
   return (
     <div
       className={`relative group h-full transition-all duration-1200 ease-out ${
@@ -194,8 +202,8 @@ const Card: React.FC<CardProps> = ({
           ? `${index * 150}ms`
           : `${(5 - index) * 100}ms`,
       }}
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Glow */}
       <div className="absolute -inset-1 bg-gradient-to-r from-[#7c4dff]/20 to-[#8a7dff]/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-40 transition-all duration-700"></div>

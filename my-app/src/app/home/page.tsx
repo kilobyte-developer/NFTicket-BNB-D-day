@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowRight, Shield, Play, Sparkles, CheckCircle2 } from 'lucide-react';
 import { FlipWords } from '@/components/FlipWords';
 import { Spotlight } from '@/components/Spotlight';
-import Link from "next/link";   // ✅ correct 
+import Link from "next/link";   
 
 const Page = () => {
   const [isVisible, setIsVisible] = useState(false);

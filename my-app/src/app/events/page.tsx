@@ -1,18 +1,127 @@
-"use client"
+"use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link'; 
-import { Search, MapPin, Calendar, Clock, Users, Star, Verified, Zap, Share2, Heart, Download, Eye, TrendingUp, Shield, Award, Gift, ExternalLink, Play, Volume2, Wallet, Copy, CheckCircle } from 'lucide-react';
-import Card from '@/components/Card';
+import Link from 'next/link';
+import { 
+  Search, 
+  MapPin, 
+  Calendar, 
+  Clock, 
+  Users, 
+  Star, 
+  Verified, 
+  Zap, 
+  Share2, 
+  Heart, 
+  Download, 
+  Eye, 
+  TrendingUp, 
+  Shield, 
+  Award, 
+  Gift, 
+  ExternalLink, 
+  Play, 
+  Volume2, 
+  Wallet, 
+  Copy, 
+  CheckCircle 
+} from 'lucide-react';
 
-const EventDetails = () => {
-  const [selectedTicketType, setSelectedTicketType] = useState('vip');
-  const [quantity, setQuantity] = useState(1);
-  const [showFullDescription, setShowFullDescription] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [activeTab, setActiveTab] = useState('about');
+// Types and Interfaces
+interface EventCollection {
+  name: string;
+  contract: string;
+  blockchain: string;
+  totalSupply: number;
+  minted: number;
+  royalties: string;
+  verified: boolean;
+}
 
-  const eventData = {
+interface EventArtist {
+  name: string;
+  verified: boolean;
+  followers: number;
+}
+
+interface Event {
+  id: number;
+  title: string;
+  subtitle: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  fullDescription: string;
+  highlights: string[];
+  gallery: string[];
+  venue: string;
+  category: string;
+  status: string;
+  verified: boolean;
+  rating: number;
+  totalRatings: number;
+  attendees: number;
+  maxCapacity: number;
+  organizer: string;
+  collection: EventCollection;
+  artist: EventArtist;
+}
+
+type TicketRarity = 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic';
+type Currency = 'ETH' | 'USD';
+
+interface TicketType {
+  id: string;
+  name: string;
+  price: number;
+  currency: Currency;
+  usdPrice: number;
+  supply: number;
+  minted: number;
+  rarity: TicketRarity;
+  attributes: string[];
+  benefits: string[];
+  available: boolean;
+}
+
+interface Activity {
+  user: string;
+  type: string;
+  item: string;
+  time: string;
+  price: string;
+}
+
+type TabType = 'about' | 'tickets' | 'activity';
+
+// Card Component (since it's imported but might not exist)
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+
+const Card: React.FC<CardProps> = ({ children, className = '', onClick }) => {
+  return (
+    <div 
+      className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 ${className}`}
+      onClick={onClick}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Main Component
+const EventDetailsPage: React.FC = () => {
+  const [selectedTicketType, setSelectedTicketType] = useState<string>('vip');
+  const [quantity, setQuantity] = useState<number>(1);
+  const [showFullDescription, setShowFullDescription] = useState<boolean>(false);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<TabType>('about');
+
+  const eventData: Event = {
     id: 1,
     title: 'Blockchain Music Festival 2025',
     subtitle: 'The Future of Music Meets Web3',
@@ -62,7 +171,7 @@ const EventDetails = () => {
     ]
   };
 
-  const ticketTypes = [
+  const ticketTypes: TicketType[] = [
     {
       id: 'general',
       name: 'General Admission',
@@ -117,7 +226,7 @@ const EventDetails = () => {
     }
   ];
 
-  const recentActivity = [
+  const recentActivity: Activity[] = [
     { user: '0x742d...4f8e', type: 'minted', item: 'VIP Experience #3821', time: '2 min ago', price: '0.35 ETH' },
     { user: '0x8a2c...7b9f', type: 'minted', item: 'General Admission #8945', time: '5 min ago', price: '0.15 ETH' },
     { user: '0x1f6d...3e8a', type: 'minted', item: 'Legendary Pass #387', time: '12 min ago', price: '0.75 ETH' },
@@ -125,9 +234,10 @@ const EventDetails = () => {
     { user: '0x5a8f...6c1e', type: 'minted', item: 'Founder Edition #89', time: '25 min ago', price: '1.5 ETH' }
   ];
 
-  const getRarityColor = (rarity) => {
+  const getRarityColor = (rarity: TicketRarity): string => {
     switch(rarity) {
       case 'Common': return 'from-gray-500 to-gray-600';
+      case 'Uncommon': return 'from-green-500 to-green-600';
       case 'Rare': return 'from-blue-500 to-purple-500';
       case 'Epic': return 'from-purple-500 to-purple-400';
       case 'Legendary': return 'from-yellow-400 to-orange-500';
@@ -140,6 +250,30 @@ const EventDetails = () => {
   const totalPrice = selectedTicket ? selectedTicket.price * quantity : 0;
   const totalUsdPrice = selectedTicket ? selectedTicket.usdPrice * quantity : 0;
 
+  const handleQuantityChange = (increment: boolean): void => {
+    if (increment) {
+      setQuantity(prev => prev + 1);
+    } else {
+      setQuantity(prev => Math.max(1, prev - 1));
+    }
+  };
+
+  const handleLikeToggle = (): void => {
+    setIsLiked(prev => !prev);
+  };
+
+  const handleTabChange = (tab: TabType): void => {
+    setActiveTab(tab);
+  };
+
+  const handleTicketSelect = (ticketId: string): void => {
+    setSelectedTicketType(ticketId);
+  };
+
+  const handleShowDescription = (): void => {
+    setShowFullDescription(prev => !prev);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
@@ -147,10 +281,18 @@ const EventDetails = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <nav className="hidden lg:flex items-center space-x-8">
-              <Link href="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</Link>
-              <Link href="/explore" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Explore</Link>
-              <Link href="/my-tickets" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">My Tickets</Link>
-              <Link href="/events" className="text-sm font-medium text-purple-400 transition-colors">Events</Link>
+              <Link href="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Home
+              </Link>
+              <Link href="/explore" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Explore
+              </Link>
+              <Link href="/my-tickets" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                My Tickets
+              </Link>
+              <Link href="/events" className="text-sm font-medium text-purple-400 transition-colors">
+                Events
+              </Link>
             </nav>
             
             <div className="flex items-center space-x-4">
@@ -170,9 +312,10 @@ const EventDetails = () => {
           <div className="space-y-4">
             <div className="relative h-96 rounded-2xl overflow-hidden group">
               <img 
-                src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+
+                src={eventData.gallery[0]}
                 alt={eventData.title}
-                className="w-full h-full object-cover"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
               
@@ -203,6 +346,9 @@ const EventDetails = () => {
                 <div key={index} className="h-20 rounded-lg cursor-pointer hover:opacity-75 transition-opacity overflow-hidden">
                   <img 
                     src={img} 
+                    loading="lazy"
+                    width={500}
+                    height={500}
                     alt={`Event gallery ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
@@ -220,7 +366,7 @@ const EventDetails = () => {
                 </span>
                 <div className="flex items-center space-x-4">
                   <button 
-                    onClick={() => setIsLiked(!isLiked)}
+                    onClick={handleLikeToggle}
                     className={`p-2 rounded-full transition-all duration-300 ${
                       isLiked ? 'bg-red-500/20 text-red-400' : 'bg-gray-700/50 text-gray-400 hover:text-red-400'
                     }`}
@@ -250,7 +396,7 @@ const EventDetails = () => {
                     ))}
                   </div>
                   <span className="text-lg font-normal">{eventData.rating}</span>
-                  <span className="text-gray-400">({eventData.totalRatings} reviews)</span>
+                  <span className="text-gray-400">({eventData.totalRatings.toLocaleString()} reviews)</span>
                 </div>
               </div>
             </div>
@@ -337,10 +483,10 @@ const EventDetails = () => {
         {/* Tabs Navigation */}
         <div className="border-b border-gray-700 mb-8">
           <div className="flex space-x-8">
-            {['about', 'tickets', 'activity'].map((tab) => (
+            {(['about', 'tickets', 'activity'] as const).map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => handleTabChange(tab)}
                 className={`py-4 px-2 font-medium transition-all duration-300 capitalize ${
                   activeTab === tab
                     ? 'border-b-2 border-purple-500 text-purple-400'
@@ -365,7 +511,7 @@ const EventDetails = () => {
                     {showFullDescription ? eventData.fullDescription : eventData.description}
                   </p>
                   <button 
-                    onClick={() => setShowFullDescription(!showFullDescription)}
+                    onClick={handleShowDescription}
                     className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
                   >
                     {showFullDescription ? 'Show Less' : 'Read More'}
@@ -393,12 +539,12 @@ const EventDetails = () => {
                   {ticketTypes.map((ticket) => (
                     <Card
                       key={ticket.id}
-                      className={`relative p-6 cursor-pointer transition-all duration-300 ${
+                      className={`relative cursor-pointer transition-all duration-300 ${
                         selectedTicketType === ticket.id
                           ? 'border-purple-500 shadow-lg shadow-purple-500/20'
                           : 'border-transparent hover:border-gray-600'
                       }`}
-                      onClick={() => setSelectedTicketType(ticket.id)}
+                      onClick={() => handleTicketSelect(ticket.id)}
                     >
                       <div className={`absolute top-4 right-4 w-3 h-3 rounded-full border-2 ${
                         selectedTicketType === ticket.id
@@ -492,14 +638,14 @@ const EventDetails = () => {
                     </label>
                     <div className="flex items-center space-x-3">
                       <button 
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        onClick={() => handleQuantityChange(false)}
                         className="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center transition-colors"
                       >
                         -
                       </button>
                       <span className="text-xl font-normal px-4">{quantity}</span>
                       <button 
-                        onClick={() => setQuantity(quantity + 1)}
+                        onClick={() => handleQuantityChange(true)}
                         className="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center transition-colors"
                       >
                         +
@@ -546,4 +692,4 @@ const EventDetails = () => {
   );
 };
 
-export default EventDetails;
+export default EventDetailsPage;

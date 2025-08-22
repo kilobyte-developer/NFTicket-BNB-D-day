@@ -1,25 +1,34 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, MouseEvent } from "react";
 import Link from "next/link";
-const Footer = () => {
-  const year = new Date().getFullYear();
-  const [showSampleData, setShowSampleData] = useState(false);
-  const [sampleData, setSampleData] = useState({});
+
+// Type definitions
+interface SampleData {
+  title: string;
+  description: string;
+  stats?: string;
+  links?: string[];
+  features?: string[];
+}
+
+interface DataMap {
+  [key: string]: SampleData;
+}
+
+interface SocialLink {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+const Footer: React.FC = () => {
+  const year: number = new Date().getFullYear();
+  const [showSampleData, setShowSampleData] = useState<boolean>(false);
+  const [sampleData, setSampleData] = useState<SampleData | null>(null);
 
   // Function to handle link clicks and show sample data
-  interface SampleData {
-    title: string;
-    description: string;
-    stats?: string;
-    links?: string[];
-    features?: string[];
-  }
-
-  interface DataMap {
-    [key: string]: SampleData;
-  }
-
-  const handleLinkClick = (linkName: string, e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLinkClick = (linkName: string, e: MouseEvent<HTMLAnchorElement>): void => {
     e.preventDefault();
     
     // Sample data for each link
@@ -128,7 +137,12 @@ const Footer = () => {
       }
     };
 
-    setSampleData(dataMap[linkName] || { title: linkName, description: "Sample data coming soon" });
+    const selectedData: SampleData = dataMap[linkName] || { 
+      title: linkName, 
+      description: "Sample data coming soon" 
+    };
+    
+    setSampleData(selectedData);
     setShowSampleData(true);
     
     // Auto-hide after 5 seconds
@@ -137,15 +151,80 @@ const Footer = () => {
     }, 5000);
   };
 
+  const handleCloseModal = (): void => {
+    setShowSampleData(false);
+  };
+
+  const handleEmailSubmit = (e: MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault();
+    // Handle email submission logic here
+    console.log("Email submission logic here");
+  };
+
+  const getGradientStyle = (): React.CSSProperties => ({
+    backgroundImage: 'linear-gradient(135deg, #7A33B7 0%, #E0E0E0 15%, #FFFFFF 30%, #C0C0C0 45%, #F5F5F5 60%, #A0A0A0 75%, #5E1C9A 100%)',
+    backgroundSize: '300% 300%',
+    animation: 'gradientShift 6s ease-in-out infinite'
+  });
+
+  const socialLinks: SocialLink[] = [
+    {
+      href: "#",
+      label: "X",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.9 2H22l-7.5 8.6L23 22h-6.6l-5.2-6.8L5 22H2l8.2-9.4L1 2h6.7l4.7 6.2L18.9 2zm-1.2 18h2L8.4 4H6.4l11.3 16z"/>
+        </svg>
+      )
+    },
+    {
+      href: "#",
+      label: "Facebook",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.2V12h2.2V9.7c0-2.2 1.3-3.4 3.3-3.4.9 0 1.8.1 2.6.2v2.3h-1.5c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/>
+        </svg>
+      )
+    },
+    {
+      href: "#",
+      label: "Instagram",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2.2A2.8 2.8 0 1 0 12 17.8 2.8 2.8 0 0 0 12 9.2zM18 6.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
+      )
+    },
+    {
+      href: "#",
+      label: "LinkedIn",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.45 20.45h-3.56v-5.6c0-1.34-.02-3.06-1.87-3.06-1.88 0-2.17 1.46-2.17 2.96v5.7H9.29V9h3.41v1.56h.05c.48-.9 1.66-1.85 3.41-1.85 3.65 0 4.32 2.4 4.32 5.5v6.24zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45z"/>
+        </svg>
+      )
+    },
+    {
+      href: "#",
+      label: "Discord",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+      )
+    }
+  ];
+
   return (
     <>
       {/* Sample Data Modal */}
-      {showSampleData && (
+      {showSampleData && sampleData && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="bg-[#0f0a24] border border-[#7c4dff]/30 rounded-xl max-w-md w-full p-6 relative shadow-xl">
             <button 
-              onClick={() => setShowSampleData(false)}
+              onClick={handleCloseModal}
               className="absolute top-4 right-4 text-white/60 hover:text-white"
+              aria-label="Close modal"
             >
               ✕
             </button>
@@ -168,7 +247,7 @@ const Footer = () => {
               <div className="mb-4">
                 <h4 className="text-white/80 text-sm font-medium mb-2">Key Features:</h4>
                 <ul className="space-y-1">
-                  {sampleData.features.map((feature, index) => (
+                  {sampleData.features.map((feature: string, index: number) => (
                     <li key={index} className="text-white/60 text-sm flex items-center">
                       <span className="text-[#7c4dff] mr-2">•</span> {feature}
                     </li>
@@ -178,7 +257,7 @@ const Footer = () => {
             )}
             
             <button 
-              onClick={() => setShowSampleData(false)}
+              onClick={handleCloseModal}
               className="w-full bg-gradient-to-r from-[#7c4dff] to-[#5e3f9e] text-white py-2 rounded-lg hover:from-[#8d5fff] hover:to-[#6f4ab3] transition-all"
             >
               Explore More
@@ -205,11 +284,7 @@ const Footer = () => {
               Create Blockchain{" "}
               <span 
                 className="bg-clip-text text-transparent relative"
-                style={{
-                  backgroundImage: 'linear-gradient(135deg, #7A33B7 0%, #E0E0E0 15%, #FFFFFF 30%, #C0C0C0 45%, #F5F5F5 60%, #A0A0A0 75%, #5E1C9A 100%)',
-                  backgroundSize: '300% 300%',
-                  animation: 'gradientShift 6s ease-in-out infinite'
-                }}
+                style={getGradientStyle()}
               >
                 Innovations
               </span>
@@ -228,7 +303,10 @@ const Footer = () => {
                     placeholder="Enter your email address"
                     className="w-full bg-transparent text-white/90 placeholder-white/40 px-6 py-4 outline-none"
                   />
-                  <button className="m-1 whitespace-nowrap rounded-full bg-gradient-to-r from-[#0a0718] to-[#0d0920] border border-white/10 px-5 py-2.5 text-sm font-normal text-white transition-all duration-300 hover:from-[#0d0920] hover:to-[#100b28] hover:shadow-[0_0_15px_rgba(124,77,255,0.3)]">
+                  <button 
+                    onClick={handleEmailSubmit}
+                    className="m-1 whitespace-nowrap rounded-full bg-gradient-to-r from-[#0a0718] to-[#0d0920] border border-white/10 px-5 py-2.5 text-sm font-normal text-white transition-all duration-300 hover:from-[#0d0920] hover:to-[#100b28] hover:shadow-[0_0_15px_rgba(124,77,255,0.3)]"
+                  >
                     <span className="relative z-10">Get Started</span>
                   </button>
                 </div>
@@ -249,11 +327,7 @@ const Footer = () => {
                   <div className="h-7 w-7 rounded-md bg-gradient-to-br from-[#7c4dff] to-[#64e7ff] shadow-[0_0_10px_rgba(124,77,255,0.5)]" />
                   <span 
                     className="text-lg font-normal bg-clip-text text-transparent"
-                    style={{
-                      backgroundImage: 'linear-gradient(135deg, #7A33B7 0%, #E0E0E0 15%, #FFFFFF 30%, #C0C0C0 45%, #F5F5F5 60%, #A0A0A0 75%, #5E1C9A 100%)',
-                      backgroundSize: '300% 300%',
-                      animation: 'gradientShift 6s ease-in-out infinite'
-                    }}
+                    style={getGradientStyle()}
                   >
                     NFTicket
                   </span>
@@ -268,11 +342,7 @@ const Footer = () => {
               <div>
                 <h4 
                   className="font-normal mb-4 bg-clip-text text-transparent"
-                  style={{
-                    backgroundImage: 'linear-gradient(135deg, #7A33B7 0%, #E0E0E0 15%, #FFFFFF 30%, #C0C0C0 45%, #F5F5F5 60%, #A0A0A0 75%, #5E1C9A 100%)',
-                    backgroundSize: '300% 300%',
-                    animation: 'gradientShift 6s ease-in-out infinite'
-                  }}
+                  style={getGradientStyle()}
                 >
                   Products
                 </h4>
@@ -309,11 +379,7 @@ const Footer = () => {
               <div>
                 <h4 
                   className="font-normal mb-4 bg-clip-text text-transparent"
-                  style={{
-                    backgroundImage: 'linear-gradient(135deg, #7A33B7 0%, #E0E0E0 15%, #FFFFFF 30%, #C0C0C0 45%, #F5F5F5 60%, #A0A0A0 75%, #5E1C9A 100%)',
-                    backgroundSize: '300% 300%',
-                    animation: 'gradientShift 6s ease-in-out infinite'
-                  }}
+                  style={getGradientStyle()}
                 >
                   Resources
                 </h4>
@@ -350,11 +416,7 @@ const Footer = () => {
               <div>
                 <h4 
                   className="font-normal mb-4 bg-clip-text text-transparent"
-                  style={{
-                    backgroundImage: 'linear-gradient(135deg, #7A33B7 0%, #E0E0E0 15%, #FFFFFF 30%, #C0C0C0 45%, #F5F5F5 60%, #A0A0A0 75%, #5E1C9A 100%)',
-                    backgroundSize: '300% 300%',
-                    animation: 'gradientShift 6s ease-in-out infinite'
-                  }}
+                  style={getGradientStyle()}
                 >
                   Learn
                 </h4>
@@ -408,51 +470,29 @@ const Footer = () => {
 
               {/* Social icons */}
               <div className="flex items-center gap-4 text-white/60">
-                {/* X */}
-                <a href="#" aria-label="X" className="hover:text-white transition-colors duration-300 p-2 rounded-md hover:bg-white/5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.9 2H22l-7.5 8.6L23 22h-6.6l-5.2-6.8L5 22H2l8.2-9.4L1 2h6.7l4.7 6.2L18.9 2zm-1.2 18h2L8.4 4H6.4l11.3 16z"/>
-                  </svg>
-                </a>
-                {/* Facebook */}
-                <a href="#" aria-label="Facebook" className="hover:text-white transition-colors duration-300 p-2 rounded-md hover:bg-white/5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.2V12h2.2V9.7c0-2.2 1.3-3.4 3.3-3.4.9 0 1.8.1 2.6.2v2.3h-1.5c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/>
-                  </svg>
-                </a>
-                {/* Instagram */}
-                <a href="#" aria-label="Instagram" className="hover:text-white transition-colors duration-300 p-2 rounded-md hover:bg-white/5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2.2A2.8 2.8 0 1 0 12 17.8 2.8 2.8 0 0 0 12 9.2zM18 6.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                  </svg>
-                </a>
-                {/* LinkedIn */}
-                <a href="#" aria-label="LinkedIn" className="hover:text-white transition-colors duration-300 p-2 rounded-md hover:bg-white/5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.45 20.45h-3.56v-5.6c0-1.34-.02-3.06-1.87-3.06-1.88 0-2.17 1.46-2.17 2.96v5.7H9.29V9h3.41v1.56h.05c.48-.9 1.66-1.85 3.41-1.85 3.65 0 4.32 2.4 4.32 5.5v6.24zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45z"/>
-                  </svg>
-                </a>
-                {/* Discord */}
-                <a href="#" aria-label="Discord" className="hover:text-white transition-colors duration-300 p-2 rounded-md hover:bg-white/5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
-                  </svg>
-                </a>
+                {socialLinks.map((social: SocialLink, index: number) => (
+                  <a 
+                    key={index}
+                    href={social.href} 
+                    aria-label={social.label} 
+                    className="hover:text-white transition-colors duration-300 p-2 rounded-md hover:bg-white/5"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
               </div>
             </div>
           </div>
         </div>
         
         {/* Add the gradientShift animation to the footer */}
-        <style>
-          {`
-            @keyframes gradientShift {
-              0% { background-position: 0% 50%; }
-              50% { background-position: 100% 50%; }
-              100% { background-position: 0% 50%; }
-            }
-          `}
-        </style>
+        <style jsx>{`
+          @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+        `}</style>
       </footer>
     </>
   );

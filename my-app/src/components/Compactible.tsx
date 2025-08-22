@@ -1,55 +1,90 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, useMotionValue, useAnimation, useTransform, useInView } from 'motion/react';
-import c1 from '../assets/c1.svg';
-import c2 from '../assets/c2.svg';
-import c3 from '../assets/c3.svg';
-import c4 from '../assets/c4.svg';
-import c5 from '../assets/c5.svg';
-import c6 from '../assets/c6.svg';
+"use client";
 
-const chains = [
-  { src: c1, alt: 'Ethereum' },
-  { src: c2, alt: 'Polygon' },
-  { src: c3, alt: 'Optimism' },
-  { src: c4, alt: 'OpenSea' },
-  { src: c5, alt: 'Zapper' },
-  { src: c6, alt: 'Starknet' },
+import React, { useEffect, useState, useRef } from 'react';
+import { 
+  motion, 
+  useMotionValue, 
+  useAnimation, 
+  useTransform, 
+  useInView, 
+  type MotionValue 
+} from "motion/react";
+import { type AnimationControls } from "motion/react";
+import Image from 'next/image';
+
+// Types and Interfaces
+interface ChainImage {
+  src: string;
+  alt: string;
+}
+
+interface RollingGalleryProps {
+  autoplay?: boolean;
+  pauseOnHover?: boolean;
+  images?: ChainImage[];
+  isInView: boolean;
+}
+
+interface DragInfo {
+  offset: {
+    x: number;
+    y: number;
+  };
+  velocity: {
+    x: number;
+    y: number;
+  };
+}
+
+type TextAnimationState = 'initial' | 'popup' | 'settled';
+
+// Default chain images - these should be placed in public/assets/
+const chains: ChainImage[] = [
+  { src: '/assets/c1.svg', alt: 'Ethereum' },
+  { src: '/assets/c2.svg', alt: 'Polygon' },
+  { src: '/assets/c3.svg', alt: 'Optimism' },
+  { src: '/assets/c4.svg', alt: 'OpenSea' },
+  { src: '/assets/c5.svg', alt: 'Zapper' },
+  { src: '/assets/c6.svg', alt: 'Starknet' },
 ];
 
-const RollingGallery = ({
+const RollingGallery: React.FC<RollingGalleryProps> = ({
   autoplay = true,
   pauseOnHover = true,
   images = [],
   isInView
 }) => {
-  images = images.length > 0 ? images : chains;
+  const displayImages: ChainImage[] = images.length > 0 ? images : chains;
 
-  const [isScreenSizeSm, setIsScreenSizeSm] = useState(
+  const [isScreenSizeSm, setIsScreenSizeSm] = useState<boolean>(
     typeof window !== 'undefined' ? window.innerWidth <= 640 : false
   );
   
   useEffect(() => {
-    const handleResize = () => setIsScreenSizeSm(window.innerWidth <= 640);
+    const handleResize = (): void => {
+      setIsScreenSizeSm(window.innerWidth <= 640);
+    };
+    
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Increased cylinder width for a wider appearance
-  const cylinderWidth = isScreenSizeSm ? 1000 : 1800;
-  const faceCount = images.length;
-  const faceWidth = (cylinderWidth / faceCount) * 1.8; // Increased face width
-  const radius = cylinderWidth / (2 * Math.PI);
+  const cylinderWidth: number = isScreenSizeSm ? 1000 : 1800;
+  const faceCount: number = displayImages.length;
+  const faceWidth: number = (cylinderWidth / faceCount) * 1.8; // Increased face width
+  const radius: number = cylinderWidth / (2 * Math.PI);
 
-  const dragFactor = 0.05;
-  const rotation = useMotionValue(0);
-  const controls = useAnimation();
+  const dragFactor: number = 0.05;
+  const rotation: MotionValue<number> = useMotionValue(0);
+  const controls: AnimationControls = useAnimation();
 
   const transform = useTransform(
     rotation,
-    (val) => `rotate3d(0,1,0,${val}deg)`
+    (val: number) => `rotate3d(0,1,0,${val}deg)`
   );
 
-  const startInfiniteSpin = (startAngle) => {
+  const startInfiniteSpin = (startAngle: number): void => {
     controls.start({
       rotateY: [startAngle, startAngle - 360],
       transition: {
@@ -62,7 +97,7 @@ const RollingGallery = ({
 
   useEffect(() => {
     if (autoplay && isInView) {
-      const currentAngle = rotation.get();
+      const currentAngle: number = rotation.get();
       startInfiniteSpin(currentAngle);
     } else {
       controls.stop();
@@ -70,19 +105,19 @@ const RollingGallery = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoplay, isInView]);
 
-  const handleUpdate = (latest) => {
+  const handleUpdate = (latest: { rotateY?: number }): void => {
     if (typeof latest.rotateY === "number") {
       rotation.set(latest.rotateY);
     }
   };
 
-  const handleDrag = (_, info) => {
+  const handleDrag = (_: MouseEvent | TouchEvent | PointerEvent, info: DragInfo): void => {
     controls.stop();
     rotation.set(rotation.get() + info.offset.x * dragFactor);
   };
 
-  const handleDragEnd = (_, info) => {
-    const finalAngle = rotation.get() + info.velocity.x * dragFactor;
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: DragInfo): void => {
+    const finalAngle: number = rotation.get() + info.velocity.x * dragFactor;
     rotation.set(finalAngle);
 
     if (autoplay && isInView) {
@@ -90,15 +125,15 @@ const RollingGallery = ({
     }
   };
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (): void => {
     if (autoplay && pauseOnHover) {
       controls.stop();
     }
   };
   
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (): void => {
     if (autoplay && pauseOnHover) {
-      const currentAngle = rotation.get();
+      const currentAngle: number = rotation.get();
       startInfiniteSpin(currentAngle);
     }
   };
@@ -142,9 +177,9 @@ const RollingGallery = ({
           }}
           className="flex min-h-[250px] cursor-grab items-center justify-center [transform-style:preserve-3d]"
         >
-          {images.map((chain, i) => (
+          {displayImages.map((chain: ChainImage, i: number) => (
             <div
-              key={i}
+              key={`${chain.alt}-${i}`}
               className="group absolute flex h-fit items-center justify-center p-[10%] [backface-visibility:hidden] md:p-[8%]"
               style={{
                 width: `${faceWidth}px`,
@@ -158,17 +193,19 @@ const RollingGallery = ({
                 }}
               >
                 <div
-                  className="rounded-[20px] h-32 w-32 flex items-center justify-center backdrop-blur-md transition-all duration-300 ease-out group-hover:scale-110 group-hover:shadow-xl"
+                  className="rounded-[20px] h-32 w-32 flex items-center justify-center backdrop-blur-md transition-all duration-300 ease-out group-hover:scale-110 group-hover:shadow-xl relative"
                   style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.08)',
                     border: '1px solid rgba(255, 255, 255, 0.15)',
                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
                   }}
                 >
-                  <img
+                  <Image
                     src={chain.src}
                     alt={chain.alt}
-                    className="h-16 w-auto pointer-events-none transition-transform duration-300 group-hover:scale-110"
+                    width={64}
+                    height={64}
+                    className="pointer-events-none transition-transform duration-300 group-hover:scale-110 object-contain"
                     loading="lazy"
                   />
                 </div>
@@ -181,15 +218,15 @@ const RollingGallery = ({
   );
 };
 
-const Compactible = () => {
-  const [textAnimationState, setTextAnimationState] = useState('initial');
-  const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.5, once: false });
+const Compactible: React.FC = () => {
+  const [textAnimationState, setTextAnimationState] = useState<TextAnimationState>('initial');
+  const ref = useRef<HTMLElement>(null);
+  const isInView: boolean = useInView(ref, { amount: 0.5, once: false });
   
   useEffect(() => {
     if (isInView) {
       // Text pop-up animation sequence
-      const textTimer = setTimeout(() => {
+      const textTimer: NodeJS.Timeout = setTimeout(() => {
         setTextAnimationState('popup');
         setTimeout(() => {
           setTextAnimationState('settled');
@@ -203,6 +240,14 @@ const Compactible = () => {
       setTextAnimationState('initial');
     }
   }, [isInView]);
+
+  const getAnimationStyle = (): string => {
+    return textAnimationState === 'popup' ? 'textPopUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' : 'none';
+  };
+
+  const getBackgroundAnimation = (): string => {
+    return textAnimationState === 'settled' ? 'gradientShift 6s ease-in-out infinite' : 'none';
+  };
 
   return (
     <section ref={ref} className="bg-black py-28 relative overflow-hidden">
@@ -223,7 +268,7 @@ const Compactible = () => {
           animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 80, scale: 0.9 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
           style={{
-            animation: textAnimationState === 'popup' ? 'textPopUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' : 'none'
+            animation: getAnimationStyle()
           }}
         >
           <div className="block">
@@ -232,7 +277,7 @@ const Compactible = () => {
               style={{
                 backgroundImage: 'linear-gradient(135deg, #7A33B7 0%, #E0E0E0 15%, #FFFFFF 30%, #C0C0C0 45%, #F5F5F5 60%, #A0A0A0 75%, #5E1C9A 100%)',
                 backgroundSize: '300% 300%',
-                animation: textAnimationState === 'settled' ? 'gradientShift 6s ease-in-out infinite' : 'none'
+                animation: getBackgroundAnimation()
               }}
             >
               Compatible Crypto with Binance
@@ -245,7 +290,7 @@ const Compactible = () => {
       </div>
 
       {/* Add the animation styles */}
-      <style>{`
+      <style jsx>{`
         @keyframes textPopUp {
           0% { 
             transform: translateY(60px) scale(0.8); 
