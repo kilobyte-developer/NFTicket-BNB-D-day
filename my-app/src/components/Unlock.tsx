@@ -18,7 +18,7 @@ export default function Unlock() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const ratio = entry.intersectionRatio;
-        const element = entry.target;
+        const element = entry.target as HTMLElement;
         
         if (element.classList.contains('title-left')) {
           if (ratio > 0.3) {
@@ -42,7 +42,7 @@ export default function Unlock() {
             element.style.opacity = '1';
             
             // Trigger image spin animation
-            const imageElement = element.querySelector('.nft-image');
+            const imageElement = element.querySelector('.nft-image') as HTMLElement | null;
             if (imageElement) {
               imageElement.style.transform = 'rotate(0deg)';
               imageElement.style.transition = 'transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s';
@@ -52,7 +52,7 @@ export default function Unlock() {
             element.style.opacity = '0';
             
             // Reset image rotation
-            const imageElement = element.querySelector('.nft-image');
+            const imageElement = element.querySelector('.nft-image') as HTMLElement | null;
             if (imageElement) {
               imageElement.style.transform = 'rotate(360deg)';
               imageElement.style.transition = 'transform 0.8s ease-out';

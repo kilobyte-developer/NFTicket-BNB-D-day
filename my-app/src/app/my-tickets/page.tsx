@@ -3,6 +3,33 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, Filter, Calendar, MapPin, Verified, Star, Users, Clock, Zap, Download, Share2, Eye, Wallet, TrendingUp, Trophy, Gift, ExternalLink, QrCode, Shield } from 'lucide-react';
 import Card from '@/components/Card';
+import { Status, TicketRarity } from '../types';
+
+interface TicketType {
+  id: string | number;
+  title: string;
+  date: string;
+  location: string;
+  originalPrice: string;
+  currentValue: string;
+  status: Status;
+  nftId: string;
+  blockchain: string;
+  contractAddress: string;
+  rarity: TicketRarity;
+  attributes: string[];
+  image: string;
+  qrCode: string;
+  verified: boolean;
+  transferable: boolean;
+  resellable: boolean;
+  collection: string;
+  mintDate: string;
+  lastSale: string;
+  views: number;
+  likes: number;
+  category: string;
+}
 
 const MyTickets = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -10,8 +37,8 @@ const MyTickets = () => {
   const [selectedView, setSelectedView] = useState('grid'); // grid or list
 
   const tabs = ['All', 'Upcoming', 'Past', 'Favorites', 'Collections'];
-  
-  const tickets = [
+
+  const tickets: TicketType[] = [
     {
       id: 1,
       title: 'Campus Fest 2025',
@@ -159,7 +186,7 @@ const MyTickets = () => {
     return matchesTab && matchesSearch;
   });
 
-  const getRarityColor = (rarity) => {
+  const getRarityColor = (rarity: TicketRarity) => {
     switch(rarity) {
       case 'Common': return 'from-gray-500 to-gray-600';
       case 'Rare': return 'from-blue-500 to-purple-500';
@@ -169,7 +196,7 @@ const MyTickets = () => {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: Status) => {
     switch(status) {
       case 'upcoming': return 'text-green-400 bg-green-500/20';
       case 'past': return 'text-gray-400 bg-gray-500/20';
@@ -186,10 +213,10 @@ const MyTickets = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <nav className="hidden lg:flex items-center space-x-8">
-              <Link to="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</Link>
-              <Link to="/explore" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Explore</Link>
-              <Link to="/my-tickets" className="text-sm font-medium text-purple-400 transition-colors">My Tickets</Link>
-              <Link to="/events" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Events</Link>
+              <Link href="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</Link>
+              <Link href="/explore" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Explore</Link>
+              <Link href="/my-tickets" className="text-sm font-medium text-purple-400 transition-colors">My Tickets</Link>
+              <Link href="/events" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Events</Link>
             </nav>
             
             <div className="flex items-center space-x-4">
@@ -295,7 +322,7 @@ const MyTickets = () => {
         {/* Tickets Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredTickets.map((ticket) => (
-            <Card key={ticket.id} className="p-0 overflow-hidden">
+            <Card key={ticket.id} className="p-0 overflow-hidden h-64">
               {/* NFT Rarity Gradient Border */}
               <div className={`absolute inset-0 bg-gradient-to-r ${getRarityColor(ticket.rarity)} opacity-20 rounded-2xl`} />
               
