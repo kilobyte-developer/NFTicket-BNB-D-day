@@ -4,9 +4,9 @@ import React from 'react';
 import { useEffect, useState, useRef } from 'react';
 
 export default function Selection() {
-  const containerRef = useRef(null);
-  const scrollerRef = useRef(null);
-  const sectionRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [start, setStart] = useState(false);
   const [inViewport, setInViewport] = useState(false);
   const headerRef = useRef(null);

@@ -10,6 +10,56 @@ import {
   Sparkles, RotateCw, ArrowRight, Bookmark, Menu, Mic
 } from 'lucide-react';
 
+
+
+interface UserData {
+  name: string;
+  wallet: string;
+  balance: string;
+  tickets: number;
+  events: number;
+}
+interface UserStats {
+  totalEvents: number;
+  totalTickets: number;
+  totalVolume: string;
+}
+
+interface TrendingEvents {
+  id: number;
+  title: string;
+  date: string;
+  location: string;
+  price: string;
+  attendees: string;
+  image: string;
+  category: string;
+  verified: boolean;
+  featured?: boolean;
+  artist?: string;
+  speaker?: string;
+  preview?: string;
+  game?: string;
+  designer?: string;
+}
+
+interface Ticket {
+      id: number;
+      event: string;
+      date: string;
+      location: string;
+      type: 'VIP Experience' | 'General Admission' | 'Backstage Pass' | 'Premium Pass';
+      price: string;
+      value: string;
+      status: 'upcoming' | 'past' | 'cancelled';
+      nftId: string;
+      image: string;
+      rarity: string;
+      benefits: string[];
+      seat: string;
+}
+
+
 const NFTTicketDashboard = () => {
   const [activeTab, setActiveTab] = useState('discover');
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,8 +115,10 @@ const NFTTicketDashboard = () => {
     animateStats();
   }, []);
 
+
+
   // Sample data for events
-  const trendingEvents = [
+  const trendingEvents: TrendingEvents[] = [
     {
       id: 1,
       title: 'Web3 Music Festival 2025',
@@ -145,7 +197,7 @@ const NFTTicketDashboard = () => {
   ];
 
   // User's NFT tickets
-  const userTickets = [
+  const userTickets: Ticket[] = [
     {
       id: 1,
       event: 'Web3 Music Festival 2025',

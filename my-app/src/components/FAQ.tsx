@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ButtonAnimations.css';
 
-const ChevronIcon = ({ isOpen }) => (
+const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
   <svg
     className={`w-6 h-6 text-slate-400 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : ''}`}
     xmlns="http://www.w3.org/2000/svg"
@@ -37,9 +37,14 @@ const faqData = [
 ];
 
 const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState(0); // First item open by default
+  const [openIndex, setOpenIndex] = useState<number | null>(0); // First item open by default
 
-  const handleToggle = (index) => {
+  interface FaqItem {
+    question: string;
+    answer: string;
+  }
+
+  const handleToggle = (index: number): void => {
     setOpenIndex(openIndex === index ? null : index);
   };
 

@@ -139,10 +139,10 @@ export default function EventExplorer() {
               </div>
               
               <nav className="hidden lg:flex items-center space-x-8">
-                <Link to="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</Link>
-                <Link to="/explore" className="text-sm font-medium text-purple-400 transition-colors">Explore</Link>
-                <Link to="/my-tickets" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">My Tickets</Link>
-                <Link to="/events" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Events</Link>
+                <Link href="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</Link>
+                <Link href="/explore" className="text-sm font-medium text-purple-400 transition-colors">Explore</Link>
+                <Link href="/my-tickets" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">My Tickets</Link>
+                <Link href="/events" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Events</Link>
               </nav>
             </div>
           </div>

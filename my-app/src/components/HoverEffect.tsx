@@ -1,9 +1,46 @@
-import { cn } from "../lib/utils.jsx";
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+"use client";
 
-export const HoverEffect = ({ items, className }) => {
-  let [hoveredIndex, setHoveredIndex] = useState(null);
+import { cn } from "../lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState, ReactNode } from "react";
+
+// Type definitions
+interface HoverEffectItem {
+  title: string;
+  description: string;
+  icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+}
+
+interface HoverEffectProps {
+  items: HoverEffectItem[];
+  className?: string;
+}
+
+interface CardProps {
+  className?: string;
+  children: ReactNode;
+}
+
+interface CardTitleProps {
+  className?: string;
+  children: ReactNode;
+}
+
+interface CardDescriptionProps {
+  className?: string;
+  children: ReactNode;
+}
+
+export const HoverEffect: React.FC<HoverEffectProps> = ({ items, className }) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  const handleMouseEnter = (index: number): void => {
+    setHoveredIndex(index);
+  };
+
+  const handleMouseLeave = (): void => {
+    setHoveredIndex(null);
+  };
 
   return (
     <div
@@ -12,14 +49,14 @@ export const HoverEffect = ({ items, className }) => {
         className
       )}
     >
-      {items.map((item, idx) => {
+      {items.map((item: HoverEffectItem, idx: number) => {
         const IconComponent = item.icon;
         return (
           <div
-            key={item.title}
+            key={`${item.title}-${idx}`}
             className="relative group block p-2 h-full w-full"
-            onMouseEnter={() => setHoveredIndex(idx)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={() => handleMouseEnter(idx)}
+            onMouseLeave={handleMouseLeave}
           >
             <AnimatePresence>
               {hoveredIndex === idx && (
@@ -66,7 +103,7 @@ export const HoverEffect = ({ items, className }) => {
   );
 };
 
-export const Card = ({ className, children }) => {
+export const Card: React.FC<CardProps> = ({ className, children }) => {
   return (
     <div
       className={cn(
@@ -81,7 +118,7 @@ export const Card = ({ className, children }) => {
   );
 };
 
-export const CardTitle = ({ className, children }) => {
+export const CardTitle: React.FC<CardTitleProps> = ({ className, children }) => {
   return (
     <h4 className={cn("text-zinc-100 font-medium tracking-wide mt-4", className)}>
       {children}
@@ -89,7 +126,7 @@ export const CardTitle = ({ className, children }) => {
   );
 };
 
-export const CardDescription = ({ className, children }) => {
+export const CardDescription: React.FC<CardDescriptionProps> = ({ className, children }) => {
   return (
     <p
       className={cn(

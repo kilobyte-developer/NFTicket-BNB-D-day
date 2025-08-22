@@ -35,47 +35,59 @@ export default function SolanaStats() {
     };
   }, []);
 
-  const animateCountUltraSmooth = (target, duration, setValue, decimals = 0) => {
-    let startTime = null;
-    const totalSteps = Math.min(50, target * (decimals === 0 ? 1 : 10)); // Limit total steps
-    let currentStep = 0;
-    
-    const animate = (currentTime) => {
+  interface AnimateCountUltraSmoothOptions {
+    target: number;
+    duration: number;
+    setValue: (value: number) => void;
+    decimals?: number;
+  }
+
+  const animateCountUltraSmooth = (
+    target: number,
+    duration: number,
+    setValue: (value: number) => void,
+    decimals: number = 0
+  ): void => {
+    let startTime: number | null = null;
+    const totalSteps: number = Math.min(50, target * (decimals === 0 ? 1 : 10)); // Limit total steps
+    let currentStep: number = 0;
+
+    const animate = (currentTime: number) => {
       if (!startTime) startTime = currentTime;
-      
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
+
+      const elapsed: number = currentTime - startTime;
+      const progress: number = Math.min(elapsed / duration, 1);
+
       // Smooth easing function
-      const easeProgress = 1 - Math.pow(1 - progress, 4);
-      
+      const easeProgress: number = 1 - Math.pow(1 - progress, 4);
+
       // Calculate which step we should be on
-      const targetStep = Math.floor(easeProgress * totalSteps);
-      
+      const targetStep: number = Math.floor(easeProgress * totalSteps);
+
       // Only update when we move to the next step (reduces updates dramatically)
       if (targetStep > currentStep || progress === 1) {
         currentStep = targetStep;
-        
-        const currentValue = (target * easeProgress);
-        
+
+        const currentValue: number = target * easeProgress;
+
         // Smart rounding to prevent micro-changes
-        let displayValue;
+        let displayValue: number;
         if (decimals === 0) {
           displayValue = Math.floor(currentValue);
         } else {
           displayValue = Math.floor(currentValue * 10) / 10;
         }
-        
+
         setValue(Math.min(displayValue, target));
       }
-      
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
         setValue(target);
       }
     };
-    
+
     requestAnimationFrame(animate);
   };
 
