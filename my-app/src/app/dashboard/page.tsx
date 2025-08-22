@@ -313,7 +313,7 @@ const NFTTicketDashboard: React.FC = () => {
     setShowTicketDetails(true);
   };
 
-  // Handle buying a ticket
+  // Handle buying a ticket - FIXED CONFLICT
   const handleBuyTicket = (event: TrendingEvents): void => {
     const newTicket: Ticket = {
       id: event.id,
@@ -334,7 +334,7 @@ const NFTTicketDashboard: React.FC = () => {
     setShowTicketDetails(true);
   };
 
-  // Handle audio play/pause
+  // Handle audio play/pause - FIXED CONFLICT
   const toggleAudio = (): void => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -513,7 +513,7 @@ const NFTTicketDashboard: React.FC = () => {
     </div>
   );
 
-  // Ticket Details Modal with purchase option
+  // Ticket Details Modal with purchase option - FIXED CONFLICT
   const TicketDetailsModal: React.FC = () => (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl w-full max-w-2xl border border-purple-500/30 overflow-hidden">
@@ -658,7 +658,7 @@ const NFTTicketDashboard: React.FC = () => {
     </div>
   );
 
-  // Animated text component
+  // Animated text component - FIXED CONFLICT
   const AnimatedText: React.FC<AnimatedTextProps> = ({ text, className = "" }) => {
     const letters: string[] = text.split("");
     
