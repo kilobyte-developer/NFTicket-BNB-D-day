@@ -68,13 +68,15 @@ const NFTTicketDashboard = () => {
   const [currentQRCode, setCurrentQRCode] = useState('');
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showTicketDetails, setShowTicketDetails] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
-  const [filteredEvents, setFilteredEvents] = useState<TrendingEvents[]>([]);
-  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>([]);
+  type TicketType = typeof userTickets[number];
+  const [selectedTicket, setSelectedTicket] = useState<TicketType | null>(null);
+  type EventType = typeof trendingEvents[number];
+  const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
+  const [filteredTickets, setFilteredTickets] = useState<typeof userTickets>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioProgress, setAudioProgress] = useState(0);
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [userData, setUserData] = useState({
     name: 'Alex Johnson',
     wallet: '0x742d35cc6634C0532925a3b8D8C0532925a3b8D8',
@@ -289,18 +291,26 @@ const NFTTicketDashboard = () => {
   };
 
   // Handle ticket details view
-  const handleViewDetails = (ticket) => {
+  const handleViewDetails = (ticket: typeof userTickets[number]) => {
     setSelectedTicket(ticket);
     setShowTicketDetails(true);
   };
 
   // Handle buying a ticket
-  const handleBuyTicket = (event) => {
+  const handleBuyTicket = (event: typeof trendingEvents[number]) => {
     setSelectedTicket({
-      ...event,
+      id: event.id,
+      event: event.title,
+      date: event.date,
+      location: event.location,
       type: 'General Admission',
       price: event.price,
+      value: event.price, // You may want to set a different value if needed
+      status: 'upcoming',
       nftId: `#${event.title.substring(0, 3).toUpperCase()}${Math.floor(1000 + Math.random() * 9000)}`,
+      image: event.image,
+      rarity: 'Common',
+      benefits: ['Event Access'], // You can customize benefits based on event/category
       seat: `GA-${Math.floor(Math.random() * 20) + 1}, Row ${String.fromCharCode(65 + Math.floor(Math.random() * 10))}, Seat ${Math.floor(Math.random() * 30) + 1}`
     });
     setShowTicketDetails(true);
@@ -308,12 +318,14 @@ const NFTTicketDashboard = () => {
 
   // Handle audio play/pause
   const toggleAudio = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
     }
-    setIsPlaying(!isPlaying);
   };
 
   // Update audio progress
@@ -461,8 +473,8 @@ const NFTTicketDashboard = () => {
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl w-full max-w-2xl border border-purple-500/30 overflow-hidden">
         <div className="relative h-48">
           <img 
-            src={selectedTicket.image} 
-            alt={selectedTicket.event}
+            src={selectedTicket?.image ?? ""} 
+            alt={selectedTicket?.event ?? ""}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
@@ -480,17 +492,17 @@ const NFTTicketDashboard = () => {
             <div>
               <div className="flex items-center space-x-2 mb-1">
                 <div className={`text-xs font-medium px-2 py-1 rounded-full ${
-                  selectedTicket.status === 'upcoming' 
+                  selectedTicket && selectedTicket.status === 'upcoming' 
                     ? 'bg-green-500/20 text-green-400' 
                     : 'bg-gray-500/20 text-gray-400'
                 }`}>
-                  {selectedTicket.status || 'Available'}
+                  {(selectedTicket?.status) || 'Available'}
                 </div>
                 <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white text-xs font-medium px-2 py-1 rounded-full">
-                  {selectedTicket.rarity || 'New'}
+                  {selectedTicket?.rarity || 'New'}
                 </div>
               </div>
-              <h3 className="text-2xl font-medium text-white">{selectedTicket.event || selectedTicket.title}</h3>
+              <h3 className="text-2xl font-medium text-white">{'event' in (selectedTicket ?? {}) ? selectedTicket?.event : (selectedTicket as any)?.title}</h3>
             </div>
           </div>
           
@@ -500,18 +512,18 @@ const NFTTicketDashboard = () => {
               <div className="space-y-2">
                 <div className="flex items-center text-sm text-gray-300">
                   <Calendar size={16} className="mr-2" />
-                  <span>{selectedTicket.date}</span>
+                  <span>{selectedTicket?.date}</span>
                 </div>
                 <div className="flex items-center text-sm text-gray-300">
                   <MapPin size={16} className="mr-2" />
-                  <span>{selectedTicket.location}</span>
+                  <span>{selectedTicket?.location}</span>
                 </div>
-                {selectedTicket.nftId && (
+                {selectedTicket && selectedTicket.nftId && (
                   <div className="text-sm font-mono text-purple-400 mt-2">
                     {selectedTicket.nftId}
                   </div>
                 )}
-                {selectedTicket.seat && (
+                {selectedTicket && selectedTicket.seat && (
                   <div className="text-sm text-gray-300 mt-2">
                     <span className="text-gray-400">Seat: </span>
                     {selectedTicket.seat}
@@ -525,13 +537,13 @@ const NFTTicketDashboard = () => {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-300">Type:</span>
-                  <span className="text-white">{selectedTicket.type || 'General Admission'}</span>
+                  <span className="text-white">{selectedTicket?.type || 'General Admission'}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-300">Price:</span>
-                  <span className="text-white">{selectedTicket.price}</span>
+                  <span className="text-white">{selectedTicket?.price}</span>
                 </div>
-                {selectedTicket.value && (
+                {selectedTicket && selectedTicket.value && (
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-300">Current Value:</span>
                     <span className="text-green-400">{selectedTicket.value}</span>
@@ -541,7 +553,7 @@ const NFTTicketDashboard = () => {
             </div>
           </div>
           
-          {selectedTicket.benefits && (
+          {selectedTicket && selectedTicket.benefits && (
             <div className="mb-6">
               <h4 className="text-sm font-medium text-gray-400 mb-2">Benefits</h4>
               <div className="flex flex-wrap gap-2">
@@ -555,7 +567,7 @@ const NFTTicketDashboard = () => {
           )}
           
           <div className="grid grid-cols-2 gap-3">
-            {selectedTicket.status ? (
+            {selectedTicket && selectedTicket.status ? (
               <>
                 <button 
                   onClick={generateRandomQR}
@@ -599,7 +611,7 @@ const NFTTicketDashboard = () => {
   );
 
   // Animated text component
-  const AnimatedText = ({ text, className = "" }) => {
+  const AnimatedText = ({ text, className = "" }: { text: string; className?: string }) => {
     const letters = text.split("");
     
     return (
