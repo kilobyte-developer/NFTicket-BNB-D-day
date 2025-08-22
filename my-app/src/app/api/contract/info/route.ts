@@ -19,12 +19,12 @@ export async function GET() {
       name: "HackathonTicket",
       symbol: "HACKT",
     })
-  } catch (error: any) {
+  } catch (error) {
     console.error("Get contract info error:", error)
     return Response.json(
       {
         error: "Failed to get contract info",
-        details: error.message,
+        details: typeof error === "object" && error !== null && "message" in error ? (error as { message: string }).message : String(error),
       },
       { status: 500 },
     )
