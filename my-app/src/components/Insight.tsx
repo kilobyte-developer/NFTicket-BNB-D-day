@@ -77,7 +77,7 @@ export default function Insight() {
           >
             <div className="h-64 relative overflow-hidden">
               <Image
-                src="/images/i1.webp"
+                src="/assets/i1.webp"
                 alt="Privacy Protection"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -121,10 +121,11 @@ export default function Insight() {
           >
             <div className="h-64 relative overflow-hidden">
               <Image
-                src="/images/i2.webp"
+                src="/assets/i2.webp"
                 alt="AI Scammers"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
+                unoptimized
               />
             </div>
             <div className="p-6">
@@ -165,7 +166,7 @@ export default function Insight() {
           >
             <div className="h-64 relative overflow-hidden">
               <Image
-                src="/images/i3.webp"
+                src="/assets/i3.webp"
                 alt="Blockchain Technology"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"

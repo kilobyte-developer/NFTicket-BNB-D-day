@@ -1,15 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import logo1 from "../assets/logo1.png";
-import logo2 from "../assets/logo2.png";
-import logo3 from "../assets/logo3.png";
-import logo4 from "../assets/logo4.png";
-import logo5 from "../assets/logo5.png";
-import logo6 from "../assets/logo6.png";
-import logo8 from "../assets/logo8.png";
 
-const logos = [logo1, logo2, logo3, logo4, logo5, logo6, logo8];
+const logos: string[] = [
+  "/assets/logo1.png",
+  "/assets/logo2.png",
+  "/assets/logo3.png",
+  "/assets/logo4.png",
+  "/assets/logo5.png",
+  "/assets/logo6.png",
+  "/assets/logo8.png",
+];
 
 const Logo: React.FC = () => {
   return (
@@ -32,6 +33,8 @@ const Logo: React.FC = () => {
               <Image
                 key={idx}
                 src={src}
+                width={300}
+                height={300}
                 alt={`partner-logo-${idx % logos.length}`}
                 className="h-10 sm:h-12 md:h-14 object-contain opacity-80 hover:opacity-100 transition-opacity duration-200"
                 loading="lazy"

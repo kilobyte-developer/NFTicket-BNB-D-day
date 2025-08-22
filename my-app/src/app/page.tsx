@@ -1,6 +1,6 @@
 // app/page.tsx
 import Hero from "@/components/Home";
-// import Logo from "@/components/Logo";
+import Logo from "@/components/Logo";
 import Benefits from "@/components/Benefits";
 import Growth from "@/components/Growth";
 import Unlock from "@/components/Unlock";
@@ -14,9 +14,9 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      {/* <Logo /> */}
+      <Logo />
       <Benefits />
-      {/* <Growth /> */}
+      <Growth />
       <Unlock />
       <Selection />
       <May />
