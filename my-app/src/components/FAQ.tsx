@@ -39,11 +39,6 @@ const faqData = [
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0); // First item open by default
 
-  interface FaqItem {
-    question: string;
-    answer: string;
-  }
-
   const handleToggle = (index: number): void => {
     setOpenIndex(openIndex === index ? null : index);
   };

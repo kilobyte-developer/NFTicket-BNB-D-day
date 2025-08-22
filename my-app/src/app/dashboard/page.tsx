@@ -1,15 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useRef, MouseEvent, ChangeEvent } from 'react';
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import Link from 'next/link';
 import { 
-  Search, Calendar, MapPin, Users, TrendingUp, Star, Shield, 
-  Zap, Gift, QrCode, Wallet, Copy, CheckCircle, ExternalLink,
-  Bell, User, LogOut, Settings, Heart, Share2, Eye, Download,
-  Filter, Plus, Ticket, Clock, Award, Music, Gamepad2, Palette,
-  Code, ChevronRight, Volume2, Play, Verified, X, CreditCard,
-  Sparkles, RotateCw, ArrowRight, Bookmark, Menu, Mic
+  Search, Calendar, MapPin, Users, TrendingUp, Star, Gift, QrCode, Wallet, Copy, ExternalLink, Share2
+,  Bell, User, Heart, Download, Plus, Ticket, Music, Gamepad2, Palette,
+  Code, ChevronRight, Volume2, Play, Verified, X, CreditCard, Bookmark,
 } from 'lucide-react';
+import Image from 'next/image';
 
 // Type definitions
 interface UserData {
@@ -19,13 +17,6 @@ interface UserData {
   tickets: number;
   events: number;
 }
-
-interface UserStats {
-  totalEvents: number;
-  totalTickets: number;
-  totalVolume: string;
-}
-
 interface TrendingEvents {
   id: number;
   title: string;
@@ -78,12 +69,12 @@ interface AnimatedTextProps {
   className?: string;
 }
 
-type TabType = 'discover' | 'my-tickets' | 'create' | 'profile';
+// type TabType = 'discover' | 'my-tickets' | 'create' | 'profile';
 
 const NFTTicketDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('discover');
+  // const [activeTab, setActiveTab] = useState<TabType>('discover');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(true);
+  // const [isWalletConnected, setIsWalletConnected] = useState<boolean>(true);
   const [showQRModal, setShowQRModal] = useState<boolean>(false);
   const [currentQRCode, setCurrentQRCode] = useState<string>('');
   const [showCreateEventModal, setShowCreateEventModal] = useState<boolean>(false);
@@ -96,7 +87,7 @@ const NFTTicketDashboard: React.FC = () => {
   const [audioProgress, setAudioProgress] = useState<number>(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   
-  const [userData, setUserData] = useState<UserData>({
+  const [userData] = useState<UserData>({
     name: 'Alex Johnson',
     wallet: '0x742d35cc6634C0532925a3b8D8C0532925a3b8D8',
     balance: '4.25 ETH',
@@ -520,7 +511,9 @@ const NFTTicketDashboard: React.FC = () => {
         {selectedTicket && (
           <>
             <div className="relative h-48">
-              <img 
+              <Image
+                height={192}
+                width={384}
                 src={selectedTicket.image} 
                 alt={selectedTicket.event}
                 className="w-full h-full object-cover"
@@ -879,7 +872,9 @@ const NFTTicketDashboard: React.FC = () => {
                 {filteredEvents.slice(0, 4).map((event: TrendingEvents) => (
                   <div key={event.id} className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 rounded-xl overflow-hidden border border-purple-500/10 hover:border-purple-500/30 transition-all group hover:scale-[1.02]">
                     <div className="relative h-40 overflow-hidden">
-                      <img 
+                      <Image
+                        height={160}
+                        width={256}
                         src={event.image} 
                         alt={event.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -1005,7 +1000,9 @@ const NFTTicketDashboard: React.FC = () => {
                 <h3 className="text-sm font-medium text-gray-300 mb-3">Now Playing</h3>
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-12 h-12 rounded-lg overflow-hidden">
-                    <img 
+                    <Image
+                      height={48}
+                      width={48}
                       src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
                       alt="Event preview"
                       className="w-full h-full object-cover"
@@ -1106,7 +1103,9 @@ const NFTTicketDashboard: React.FC = () => {
                     <h3 className="text-lg font-medium text-white truncate">{ticket.event}</h3>
                   </div>
                   <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                    <img 
+                    <Image
+                      height={48}
+                      width={48}
                       src={ticket.image} 
                       alt={ticket.event}
                       className="w-full h-full object-cover"

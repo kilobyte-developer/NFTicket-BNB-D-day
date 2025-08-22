@@ -1,9 +1,10 @@
 "use client"
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, Filter, Calendar, MapPin, Verified, Star, Users, Clock, Zap, Download, Share2, Eye, Wallet, TrendingUp, Trophy, Gift, ExternalLink, QrCode, Shield } from 'lucide-react';
+import { Search, Filter, Calendar, MapPin, Verified, Star, Share2, Eye, Wallet, TrendingUp, Trophy, Gift, ExternalLink, QrCode } from 'lucide-react';
 import Card from '@/components/Card';
 import { Status, TicketRarity } from '../types';
+import Image from 'next/image';
 
 interface TicketType {
   id: string | number;
@@ -34,7 +35,7 @@ interface TicketType {
 const MyTickets = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedView, setSelectedView] = useState('grid'); // grid or list
+  // const [selectedView, setSelectedView] = useState('grid'); // grid or list
 
   const tabs = ['All', 'Upcoming', 'Past', 'Favorites', 'Collections'];
 
@@ -348,7 +349,9 @@ const MyTickets = () => {
 
               {/* Event Image */}
               <div className="relative h-48 overflow-hidden">
-                <img 
+                <Image
+                  height={192}
+                  width={384}
                   src={ticket.image} 
                   alt={ticket.title}
                   className="w-full h-full object-cover"

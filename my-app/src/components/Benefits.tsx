@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, ReactElement } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Shield, Ban, Eye, Star, Lock, DollarSign, LucideIcon } from "lucide-react";
 
 interface Benefit {
@@ -12,7 +12,7 @@ interface Benefit {
 
 interface CardProps {
   title: string;
-  icon: React.ReactElement<any>;
+  icon: React.ReactElement | string;
   description: string;
   direction: "left" | "right" | "top" | "bottom";
   isVisible: boolean;
@@ -70,6 +70,8 @@ const Benefits: React.FC = () => {
   ];
 
   useEffect(() => {
+    const currentRef = sectionRef.current;
+    
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -85,13 +87,13 @@ const Benefits: React.FC = () => {
       }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [hasAnimated]);
@@ -234,7 +236,9 @@ const Card: React.FC<CardProps> = ({
             <div className="relative bg-gradient-to-br from-[#0a0718]/80 via-[#0d0920]/70 to-[#100b28]/80 p-8 rounded-2xl border border-white/8 flex flex-col items-center justify-center text-center h-full backdrop-blur-xl shadow-2xl overflow-hidden">
               <div className="relative z-10 flex flex-col items-center">
                 <div className="mb-4 bg-gradient-to-br from-[#7c4dff]/30 to-[#8a7dff]/30 p-3 rounded-full border border-[#7c4dff]/25 backdrop-blur-md shadow-lg">
-                  {React.cloneElement(icon, { className: "h-6 w-6 text-white" })}
+                  {React.isValidElement(icon)
+                    ? React.cloneElement<React.HTMLAttributes<HTMLElement>>(icon as React.ReactElement, { className: "h-6 w-6 text-white" })
+                    : icon}
                 </div>
                 <h3 className="text-lg font-semibold mb-4 text-white/95 leading-tight">
                   {title}
