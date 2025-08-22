@@ -1,4 +1,4 @@
-import { getContract } from "@/lib/contract"
+import { getContract } from "../../../../../lib/contract"
 
 export async function GET() {
   try {

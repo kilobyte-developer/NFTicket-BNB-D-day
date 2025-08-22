@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server"
-import { getContract } from "@/lib/contract"
-import { supabase } from "@/lib/supabase"
-import { validateMagicToken, createAuthResponse } from "@/lib/auth"
+import { getContract } from "../../../../../lib/contract"
+import { supabase } from "../../../../../lib/supabase"
+import { validateMagicToken, createAuthResponse } from "../../../../../lib/auth"
 
 export async function GET(request: NextRequest) {
   try {

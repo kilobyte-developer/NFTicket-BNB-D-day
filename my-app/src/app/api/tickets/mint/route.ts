@@ -1,7 +1,8 @@
 import type { NextRequest } from "next/server"
-import { getContractWithSigner } from "@/lib/contract"
-import { supabase } from "@/lib/supabase"
-import { validateMagicToken, createAuthResponse } from "@/lib/auth"
+// import { getContractWithSigner } from "@/lib/contract"
+import { getContractWithSigner } from "../../../../../lib/contract"
+import { supabase } from "../../../../../lib/supabase"
+import { validateMagicToken, createAuthResponse } from "../../../../../lib/auth"
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,8 +24,12 @@ export async function POST(request: NextRequest) {
     const receipt = await tx.wait()
 
     // Extract token ID from events
+    const ticketMintedEvent = contract.interface.getEvent("TicketMinted");
     const mintEvent = receipt.logs.find(
-      (log: any) => log.topics[0] === contract.interface.getEvent("TicketMinted").topicHash,
+      (log: any) =>
+        log.topics &&
+        ticketMintedEvent &&
+        log.topics[0] === ticketMintedEvent.topicHash,
     )
 
     if (!mintEvent) {

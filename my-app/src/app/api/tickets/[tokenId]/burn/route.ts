@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server"
-import { getContractWithSigner } from "@/lib/contract"
-import { supabase } from "@/lib/supabase"
-import { validateMagicToken, createAuthResponse } from "@/lib/auth"
+import { getContractWithSigner } from "../../../../../../lib/contract"
+import { supabase } from "../../../../../../lib/supabase"
+import { validateMagicToken, createAuthResponse } from "../../../../../../lib/auth"
 
 export async function DELETE(request: NextRequest, { params }: { params: { tokenId: string } }) {
   try {
