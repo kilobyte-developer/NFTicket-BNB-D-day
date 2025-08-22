@@ -1,5 +1,6 @@
-"use client"
-import React, { useState, useEffect, useRef } from 'react';
+"use client";
+
+import React, { useState, useEffect, useRef, MouseEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
 import { 
   Search, Calendar, MapPin, Users, TrendingUp, Star, Shield, 
@@ -10,8 +11,7 @@ import {
   Sparkles, RotateCw, ArrowRight, Bookmark, Menu, Mic
 } from 'lucide-react';
 
-
-
+// Type definitions
 interface UserData {
   name: string;
   wallet: string;
@@ -19,6 +19,7 @@ interface UserData {
   tickets: number;
   events: number;
 }
+
 interface UserStats {
   totalEvents: number;
   totalTickets: number;
@@ -44,40 +45,58 @@ interface TrendingEvents {
 }
 
 interface Ticket {
-      id: number;
-      event: string;
-      date: string;
-      location: string;
-      type: 'VIP Experience' | 'General Admission' | 'Backstage Pass' | 'Premium Pass';
-      price: string;
-      value: string;
-      status: 'upcoming' | 'past' | 'cancelled';
-      nftId: string;
-      image: string;
-      rarity: string;
-      benefits: string[];
-      seat: string;
+  id: number;
+  event: string;
+  date: string;
+  location: string;
+  type: 'VIP Experience' | 'General Admission' | 'Backstage Pass' | 'Premium Pass';
+  price: string;
+  value: string;
+  status: 'upcoming' | 'past' | 'cancelled';
+  nftId: string;
+  image: string;
+  rarity: string;
+  benefits: string[];
+  seat: string;
 }
 
+interface Category {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+}
 
-const NFTTicketDashboard = () => {
-  const [activeTab, setActiveTab] = useState('discover');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isWalletConnected, setIsWalletConnected] = useState(true);
-  const [showQRModal, setShowQRModal] = useState(false);
-  const [currentQRCode, setCurrentQRCode] = useState('');
-  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
-  const [showTicketDetails, setShowTicketDetails] = useState(false);
-  type TicketType = typeof userTickets[number];
-  const [selectedTicket, setSelectedTicket] = useState<TicketType | null>(null);
-  type EventType = typeof trendingEvents[number];
-  const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
-  const [filteredTickets, setFilteredTickets] = useState<typeof userTickets>([]);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [audioProgress, setAudioProgress] = useState(0);
+interface Stats {
+  events: number;
+  tickets: number;
+  users: number;
+  volume: number;
+}
+
+interface AnimatedTextProps {
+  text: string;
+  className?: string;
+}
+
+type TabType = 'discover' | 'my-tickets' | 'create' | 'profile';
+
+const NFTTicketDashboard: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<TabType>('discover');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(true);
+  const [showQRModal, setShowQRModal] = useState<boolean>(false);
+  const [currentQRCode, setCurrentQRCode] = useState<string>('');
+  const [showCreateEventModal, setShowCreateEventModal] = useState<boolean>(false);
+  const [showTicketDetails, setShowTicketDetails] = useState<boolean>(false);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [filteredEvents, setFilteredEvents] = useState<TrendingEvents[]>([]);
+  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [audioProgress, setAudioProgress] = useState<number>(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [userData, setUserData] = useState({
+  
+  const [userData, setUserData] = useState<UserData>({
     name: 'Alex Johnson',
     wallet: '0x742d35cc6634C0532925a3b8D8C0532925a3b8D8',
     balance: '4.25 ETH',
@@ -86,17 +105,17 @@ const NFTTicketDashboard = () => {
   });
 
   // Stats counter animation
-  const [stats, setStats] = useState({ events: 0, tickets: 0, users: 0, volume: 0 });
+  const [stats, setStats] = useState<Stats>({ events: 0, tickets: 0, users: 0, volume: 0 });
   
   useEffect(() => {
-    const animateStats = () => {
+    const animateStats = (): void => {
       const targets = { events: 127, tickets: 12500, users: 45200, volume: 245 };
       const duration = 2000;
       const steps = 60;
       const stepDuration = duration / steps;
       
       let step = 0;
-      const timer = setInterval(() => {
+      const timer: NodeJS.Timeout = setInterval(() => {
         step++;
         const progress = step / steps;
         const easeOutQuart = 1 - Math.pow(1 - progress, 4);
@@ -114,8 +133,6 @@ const NFTTicketDashboard = () => {
     
     animateStats();
   }, []);
-
-
 
   // Sample data for events
   const trendingEvents: TrendingEvents[] = [
@@ -246,7 +263,7 @@ const NFTTicketDashboard = () => {
   ];
 
   // Categories for filtering
-  const categories = [
+  const categories: Category[] = [
     { id: 'all', name: 'All Events', icon: <Calendar size={16} /> },
     { id: 'music', name: 'Music', icon: <Music size={16} /> },
     { id: 'tech', name: 'Tech', icon: <Code size={16} /> },
@@ -262,7 +279,7 @@ const NFTTicketDashboard = () => {
 
   // Search functionality
   useEffect(() => {
-    const filtered = trendingEvents.filter(event => 
+    const filtered: TrendingEvents[] = trendingEvents.filter((event: TrendingEvents) => 
       event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (event.artist && event.artist.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -278,46 +295,47 @@ const NFTTicketDashboard = () => {
     if (selectedCategory === 'all') {
       setFilteredEvents(trendingEvents);
     } else {
-      const filtered = trendingEvents.filter(event => event.category === selectedCategory);
+      const filtered: TrendingEvents[] = trendingEvents.filter((event: TrendingEvents) => event.category === selectedCategory);
       setFilteredEvents(filtered);
     }
   }, [selectedCategory]);
 
   // Generate a random QR code
-  const generateRandomQR = () => {
-    const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  const generateRandomQR = (): void => {
+    const randomString: string = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     setCurrentQRCode(randomString);
     setShowQRModal(true);
   };
 
   // Handle ticket details view
-  const handleViewDetails = (ticket: typeof userTickets[number]) => {
+  const handleViewDetails = (ticket: Ticket): void => {
     setSelectedTicket(ticket);
     setShowTicketDetails(true);
   };
 
-  // Handle buying a ticket
-  const handleBuyTicket = (event: typeof trendingEvents[number]) => {
-    setSelectedTicket({
+  // Handle buying a ticket - FIXED CONFLICT
+  const handleBuyTicket = (event: TrendingEvents): void => {
+    const newTicket: Ticket = {
       id: event.id,
       event: event.title,
       date: event.date,
       location: event.location,
       type: 'General Admission',
       price: event.price,
-      value: event.price, // You may want to set a different value if needed
+      value: event.price,
       status: 'upcoming',
       nftId: `#${event.title.substring(0, 3).toUpperCase()}${Math.floor(1000 + Math.random() * 9000)}`,
+      seat: `GA-${Math.floor(Math.random() * 20) + 1}, Row ${String.fromCharCode(65 + Math.floor(Math.random() * 10))}, Seat ${Math.floor(Math.random() * 30) + 1}`,
       image: event.image,
       rarity: 'Common',
-      benefits: ['Event Access'], // You can customize benefits based on event/category
-      seat: `GA-${Math.floor(Math.random() * 20) + 1}, Row ${String.fromCharCode(65 + Math.floor(Math.random() * 10))}, Seat ${Math.floor(Math.random() * 30) + 1}`
-    });
+      benefits: ['Entry Access', 'Digital Collectible']
+    };
+    setSelectedTicket(newTicket);
     setShowTicketDetails(true);
   };
 
-  // Handle audio play/pause
-  const toggleAudio = () => {
+  // Handle audio play/pause - FIXED CONFLICT
+  const toggleAudio = (): void => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -329,15 +347,43 @@ const NFTTicketDashboard = () => {
   };
 
   // Update audio progress
-  const updateProgress = () => {
+  const updateProgress = (): void => {
     if (audioRef.current) {
-      const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+      const progress: number = (audioRef.current.currentTime / audioRef.current.duration) * 100;
       setAudioProgress(progress || 0);
     }
   };
 
+  // Handle search input change
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Handle clear search
+  const handleClearSearch = (): void => {
+    setSearchQuery('');
+  };
+
+  // Handle category selection
+  const handleCategorySelect = (categoryId: string): void => {
+    setSelectedCategory(categoryId);
+  };
+
+  // Handle modal close functions
+  const handleCloseCreateModal = (): void => {
+    setShowCreateEventModal(false);
+  };
+
+  const handleCloseQRModal = (): void => {
+    setShowQRModal(false);
+  };
+
+  const handleCloseTicketDetails = (): void => {
+    setShowTicketDetails(false);
+  };
+
   // Create Event Modal
-  const CreateEventModal = () => (
+  const CreateEventModal: React.FC = () => (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 w-full max-w-2xl border border-purple-500/30">
         <div className="flex items-center justify-between mb-6">
@@ -345,7 +391,7 @@ const NFTTicketDashboard = () => {
             Create New Event
           </h2>
           <button 
-            onClick={() => setShowCreateEventModal(false)}
+            onClick={handleCloseCreateModal}
             className="p-2 rounded-full hover:bg-gray-700 transition-colors"
           >
             <X size={24} />
@@ -429,7 +475,7 @@ const NFTTicketDashboard = () => {
   );
 
   // QR Code Modal
-  const QRModal = () => (
+  const QRModal: React.FC = () => (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 w-full max-w-md border border-purple-500/30">
         <div className="flex items-center justify-between mb-6">
@@ -437,7 +483,7 @@ const NFTTicketDashboard = () => {
             Your Ticket QR Code
           </h2>
           <button 
-            onClick={() => setShowQRModal(false)}
+            onClick={handleCloseQRModal}
             className="p-2 rounded-full hover:bg-gray-700 transition-colors"
           >
             <X size={24} />
@@ -467,156 +513,158 @@ const NFTTicketDashboard = () => {
     </div>
   );
 
-  // Ticket Details Modal with purchase option
-  const TicketDetailsModal = () => (
+  // Ticket Details Modal with purchase option - FIXED CONFLICT
+  const TicketDetailsModal: React.FC = () => (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl w-full max-w-2xl border border-purple-500/30 overflow-hidden">
-        <div className="relative h-48">
-          <img 
-            src={selectedTicket?.image ?? ""} 
-            alt={selectedTicket?.event ?? ""}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-          
-          <button 
-            onClick={() => setShowTicketDetails(false)}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
-          >
-            <X size={24} />
-          </button>
-        </div>
-        
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <div className="flex items-center space-x-2 mb-1">
-                <div className={`text-xs font-medium px-2 py-1 rounded-full ${
-                  selectedTicket && selectedTicket.status === 'upcoming' 
-                    ? 'bg-green-500/20 text-green-400' 
-                    : 'bg-gray-500/20 text-gray-400'
-                }`}>
-                  {(selectedTicket?.status) || 'Available'}
-                </div>
-                <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white text-xs font-medium px-2 py-1 rounded-full">
-                  {selectedTicket?.rarity || 'New'}
-                </div>
-              </div>
-              <h3 className="text-2xl font-medium text-white">{'event' in (selectedTicket ?? {}) ? selectedTicket?.event : (selectedTicket as any)?.title}</h3>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <h4 className="text-sm font-medium text-gray-400 mb-2">Event Details</h4>
-              <div className="space-y-2">
-                <div className="flex items-center text-sm text-gray-300">
-                  <Calendar size={16} className="mr-2" />
-                  <span>{selectedTicket?.date}</span>
-                </div>
-                <div className="flex items-center text-sm text-gray-300">
-                  <MapPin size={16} className="mr-2" />
-                  <span>{selectedTicket?.location}</span>
-                </div>
-                {selectedTicket && selectedTicket.nftId && (
-                  <div className="text-sm font-mono text-purple-400 mt-2">
-                    {selectedTicket.nftId}
-                  </div>
-                )}
-                {selectedTicket && selectedTicket.seat && (
-                  <div className="text-sm text-gray-300 mt-2">
-                    <span className="text-gray-400">Seat: </span>
-                    {selectedTicket.seat}
-                  </div>
-                )}
-              </div>
+        {selectedTicket && (
+          <>
+            <div className="relative h-48">
+              <img 
+                src={selectedTicket.image} 
+                alt={selectedTicket.event}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+              
+              <button 
+                onClick={handleCloseTicketDetails}
+                className="absolute top-4 right-4 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+              >
+                <X size={24} />
+              </button>
             </div>
             
-            <div>
-              <h4 className="text-sm font-medium text-gray-400 mb-2">Ticket Information</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-300">Type:</span>
-                  <span className="text-white">{selectedTicket?.type || 'General Admission'}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-300">Price:</span>
-                  <span className="text-white">{selectedTicket?.price}</span>
-                </div>
-                {selectedTicket && selectedTicket.value && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-300">Current Value:</span>
-                    <span className="text-green-400">{selectedTicket.value}</span>
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <div className="flex items-center space-x-2 mb-1">
+                    <div className={`text-xs font-medium px-2 py-1 rounded-full ${
+                      selectedTicket.status === 'upcoming' 
+                        ? 'bg-green-500/20 text-green-400' 
+                        : 'bg-gray-500/20 text-gray-400'
+                    }`}>
+                      {selectedTicket.status || 'Available'}
+                    </div>
+                    <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white text-xs font-medium px-2 py-1 rounded-full">
+                      {selectedTicket.rarity || 'New'}
+                    </div>
                   </div>
+                  <h3 className="text-2xl font-medium text-white">{selectedTicket.event}</h3>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-400 mb-2">Event Details</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center text-sm text-gray-300">
+                      <Calendar size={16} className="mr-2" />
+                      <span>{selectedTicket.date}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-300">
+                      <MapPin size={16} className="mr-2" />
+                      <span>{selectedTicket.location}</span>
+                    </div>
+                    {selectedTicket.nftId && (
+                      <div className="text-sm font-mono text-purple-400 mt-2">
+                        {selectedTicket.nftId}
+                      </div>
+                    )}
+                    {selectedTicket.seat && (
+                      <div className="text-sm text-gray-300 mt-2">
+                        <span className="text-gray-400">Seat: </span>
+                        {selectedTicket.seat}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="text-sm font-medium text-gray-400 mb-2">Ticket Information</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-300">Type:</span>
+                      <span className="text-white">{selectedTicket.type || 'General Admission'}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-300">Price:</span>
+                      <span className="text-white">{selectedTicket.price}</span>
+                    </div>
+                    {selectedTicket.value && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-300">Current Value:</span>
+                        <span className="text-green-400">{selectedTicket.value}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {selectedTicket.benefits && (
+                <div className="mb-6">
+                  <h4 className="text-sm font-medium text-gray-400 mb-2">Benefits</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedTicket.benefits.map((benefit: string, index: number) => (
+                      <span key={index} className="text-xs bg-gray-700/50 text-gray-300 px-3 py-1.5 rounded-md">
+                        {benefit}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-2 gap-3">
+                {selectedTicket.status ? (
+                  <>
+                    <button 
+                      onClick={generateRandomQR}
+                      className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2"
+                    >
+                      <QrCode size={18} />
+                      <span>Show QR Code</span>
+                    </button>
+                    <button className="bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-gray-300 py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2">
+                      <Share2 size={18} />
+                      <span>Share Ticket</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2">
+                      <CreditCard size={18} />
+                      <span>Buy Now</span>
+                    </button>
+                    <button className="bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-gray-300 py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2">
+                      <Bookmark size={18} />
+                      <span>Save for Later</span>
+                    </button>
+                  </>
                 )}
               </div>
             </div>
-          </div>
-          
-          {selectedTicket && selectedTicket.benefits && (
-            <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-400 mb-2">Benefits</h4>
-              <div className="flex flex-wrap gap-2">
-                {selectedTicket.benefits.map((benefit, index) => (
-                  <span key={index} className="text-xs bg-gray-700/50 text-gray-300 px-3 py-1.5 rounded-md">
-                    {benefit}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          <div className="grid grid-cols-2 gap-3">
-            {selectedTicket && selectedTicket.status ? (
-              <>
-                <button 
-                  onClick={generateRandomQR}
-                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2"
-                >
-                  <QrCode size={18} />
-                  <span>Show QR Code</span>
-                </button>
-                <button className="bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-gray-300 py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2">
-                  <Share2 size={18} />
-                  <span>Share Ticket</span>
-                </button>
-              </>
-            ) : (
-              <>
-                <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2">
-                  <CreditCard size={18} />
-                  <span>Buy Now</span>
-                </button>
-                <button className="bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-gray-300 py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2">
-                  <Bookmark size={18} />
-                  <span>Save for Later</span>
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
 
   // Floating animated elements
-  const FloatingElements = () => (
+  const FloatingElements: React.FC = () => (
     <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none">
       {/* Animated Background */}
       <div className="absolute top-1/4 left-1/12 w-96 h-96 bg-gradient-to-br from-purple-600/20 to-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/12 w-96 h-96 bg-gradient-to-br from-blue-600/10 to-purple-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      
-     
     </div>
   );
 
-  // Animated text component
-  const AnimatedText = ({ text, className = "" }: { text: string; className?: string }) => {
-    const letters = text.split("");
+  // Animated text component - FIXED CONFLICT
+  const AnimatedText: React.FC<AnimatedTextProps> = ({ text, className = "" }) => {
+    const letters: string[] = text.split("");
     
     return (
       <div className={`flex ${className}`}>
-        {letters.map((letter, i) => (
+        {letters.map((letter: string, i: number) => (
           <span 
             key={i}
             className="inline-block animate-text-rise"
@@ -664,12 +712,12 @@ const NFTTicketDashboard = () => {
                   type="text"
                   placeholder="Search events, artists, categories..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearchChange}
                   className="w-full pl-10 pr-4 py-2.5 bg-gray-900/60 border border-purple-500/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
                 {searchQuery && (
                   <button 
-                    onClick={() => setSearchQuery('')}
+                    onClick={handleClearSearch}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
                   >
                     <X size={18} />
@@ -799,10 +847,10 @@ const NFTTicketDashboard = () => {
             {/* Category Filter */}
             <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-2xl p-4 border border-purple-500/10 backdrop-blur-xl">
               <div className="flex items-center space-x-4 overflow-x-auto pb-2 scrollbar-hide">
-                {categories.map((category) => (
+                {categories.map((category: Category) => (
                   <button
                     key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
+                    onClick={() => handleCategorySelect(category.id)}
                     className={`flex items-center space-x-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
                       selectedCategory === category.id
                         ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white'
@@ -828,7 +876,7 @@ const NFTTicketDashboard = () => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredEvents.slice(0, 4).map((event) => (
+                {filteredEvents.slice(0, 4).map((event: TrendingEvents) => (
                   <div key={event.id} className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 rounded-xl overflow-hidden border border-purple-500/10 hover:border-purple-500/30 transition-all group hover:scale-[1.02]">
                     <div className="relative h-40 overflow-hidden">
                       <img 
@@ -1038,7 +1086,7 @@ const NFTTicketDashboard = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {userTickets.map((ticket) => (
+            {userTickets.map((ticket: Ticket) => (
               <div key={ticket.id} className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-2xl p-6 border border-purple-500/10 backdrop-blur-xl hover:border-purple-500/30 transition-all group hover:scale-[1.02]">
                 {/* Ticket Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -1103,7 +1151,7 @@ const NFTTicketDashboard = () => {
                 <div className="mb-4">
                   <div className="text-xs text-gray-400 mb-2">Benefits</div>
                   <div className="flex flex-wrap gap-1">
-                    {ticket.benefits.map((benefit, index) => (
+                    {ticket.benefits.map((benefit: string, index: number) => (
                       <span key={index} className="text-xs bg-gray-700/50 text-gray-300 px-2 py-1 rounded-md">
                         {benefit}
                       </span>

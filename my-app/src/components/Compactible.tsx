@@ -9,7 +9,6 @@ import {
   useInView, 
   type MotionValue 
 } from "motion/react";
-import { type AnimationControls } from "motion/react";
 import Image from 'next/image';
 
 // Types and Interfaces
@@ -77,7 +76,7 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
 
   const dragFactor: number = 0.05;
   const rotation: MotionValue<number> = useMotionValue(0);
-  const controls: AnimationControls = useAnimation();
+  const controls = useAnimation();
 
   const transform = useTransform(
     rotation,
