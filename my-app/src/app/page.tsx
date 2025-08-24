@@ -9,6 +9,7 @@ import May from "@/components/May";
 import Stat from "@/components/Stat";
 import Insight from "@/components/Insight";
 import Testimonial from "@/components/Testimonial";
+import FAQ from "@/components/FAQ";
 
 export default function HomePage() {
   return (
@@ -23,6 +24,7 @@ export default function HomePage() {
       <Stat />
       <Insight />
       <Testimonial />
+      <FAQ />
     </>
   );
 }

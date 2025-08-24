@@ -12,10 +12,10 @@ import "./ButtonAnimations.css";
 gsap.registerPlugin(ScrollTrigger);
 
 const navLinks = [
-  { title: "About", href: "/about" },
-  { title: "Event", href: "/event" },
-  { title: "Marketplace", href: "/marketplace" },
-  { title: "Contact Us", href: "/contact" },
+  { title: "Explore", href: "/explore" },
+  { title: "Events", href: "/events" },
+  { title: "Buy Tickets", href: "/my-tickets" },
+  { title: "Dashboard", href: "/dashboard" },
   { title: "FAQS", href: "/faqs" },
 ];
 
