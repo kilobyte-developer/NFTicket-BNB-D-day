@@ -39,7 +39,8 @@ export default function AuthCallbackPage() {
         // Redirect to /dashboard or provided next param
         const next = params.get("next") || "/dashboard"
         router.replace(next)
-      } catch (_e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_e) {  
         router.replace("/login?error=oauth_failed")
       }
     }

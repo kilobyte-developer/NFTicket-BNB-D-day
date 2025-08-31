@@ -4,8 +4,8 @@ import { Magic } from "magic-sdk"
 import { OAuthExtension } from "@magic-ext/oauth"
 
 // Removed import of InstanceWithExtensions
-
-let magicInstance: any = null
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let magicInstance: any = null  
 
 export function getMagic() {
   if (typeof window === "undefined") return null

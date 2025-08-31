@@ -81,7 +81,7 @@ const NFTTicketDashboard: React.FC = () => {
   const [showTicketDetails, setShowTicketDetails] = useState<boolean>(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<TrendingEvents[]>([]);
-  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>([]);
+  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>([]);  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [audioProgress, setAudioProgress] = useState<number>(0);

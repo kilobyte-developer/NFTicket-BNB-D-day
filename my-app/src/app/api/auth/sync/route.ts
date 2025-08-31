@@ -43,7 +43,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true, profile: data })
-  } catch (_e) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_e) {   
     return NextResponse.json({ error: "Invalid token" }, { status: 401 })
   }
 }
