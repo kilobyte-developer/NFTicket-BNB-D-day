@@ -9,8 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@magic-ext/oauth": "^23.4.2",
     "@react-three/drei": "^10.7.3",
     "@react-three/fiber": "^9.3.0",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.56.1",
     "clsx": "^2.1.1",
     "ethers": "^6.15.0",
     "framer-motion": "^12.23.12",
