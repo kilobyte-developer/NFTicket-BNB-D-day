@@ -2,7 +2,7 @@
 
 import type * as React from "react"
 // import { loginWithGoogle } from "@/lib/magic-client"
-import { loginWithGoogle } from "../../../lib/magic-client"
+import { loginWithGoogle } from "@lib/magic-client"
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement>
 

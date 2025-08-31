@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { Magic } from "@magic-sdk/admin"
-import { getAdminSupabase } from "../../../../../lib/supabase-admin"
+import { getAdminSupabase } from "@lib/supabase-admin"
 
 const secret = process.env.MAGIC_SECRET_KEY
 if (!secret) {

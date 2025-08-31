@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { getMagic } from "../../../../lib/magic-client"
+import { getMagic } from "@lib/magic-client"
 
 export default function AuthCallbackPage() {
   const router = useRouter()

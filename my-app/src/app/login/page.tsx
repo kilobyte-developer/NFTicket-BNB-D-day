@@ -3,7 +3,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { ethers } from "ethers"
 import { useRouter } from "next/navigation" // ✅ for Next.js App Router
-import { getMagic } from "../../../lib/magic-client"
+import { getMagic } from "@lib/magic-client"
 
 declare global {
   interface Window {
