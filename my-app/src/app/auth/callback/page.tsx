@@ -16,8 +16,7 @@ export default function AuthCallbackPage() {
           router.replace("/login?error=magic_not_ready")
           return
         }
-
-        // Finalize Magic OAuth (e.g., Google)
+        
         const result = await magic.oauth.getRedirectResult().catch(() => null)
 
         // Acquire DID token to authenticate with our server
