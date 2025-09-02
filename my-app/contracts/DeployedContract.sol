@@ -17,7 +17,7 @@ contract TicketNFT is ERC721, Ownable {
         ERC721("HackathonTicket", "HACKT")
         Ownable(msg.sender)                   // OZ v5: pass initial owner
     {
-        _baseTokenURI = initialBaseURI;       // e.g. "ipfs://Qm.../"
+        _baseTokenURI = initialBaseURI;      
     }
 
 
