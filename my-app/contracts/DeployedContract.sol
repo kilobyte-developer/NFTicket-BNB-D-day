@@ -20,7 +20,6 @@ contract TicketNFT is ERC721, Ownable {
         _baseTokenURI = initialBaseURI;       // e.g. "ipfs://Qm.../"
     }
 
-    // ----------------- MINTING -----------------
 
     /// Auto-increment mint (no tokenId param)
     function mintTicket(address to) external onlyOwner returns (uint256) {
